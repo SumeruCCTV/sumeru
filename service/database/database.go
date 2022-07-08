@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/SumeruCCTV/sumeru/pkg/config"
 	"github.com/SumeruCCTV/sumeru/pkg/svcstat"
+	"github.com/SumeruCCTV/sumeru/pkg/utils"
 	"github.com/SumeruCCTV/sumeru/service/database/db"
 	"github.com/SumeruCCTV/sumeru/service/database/models"
 	"github.com/go-redis/redis/v8"
@@ -12,6 +13,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 	"time"
 )
 
@@ -60,6 +62,9 @@ func (svc *Service) Start() error {
 			}
 		}
 	}()
+
+	// Register addr serializer
+	schema.RegisterSerializer("addr", utils.AddrSerializer{})
 
 	return svc.startMigration()
 }
