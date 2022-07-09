@@ -11,15 +11,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type loginResponse struct {
-	Token string `json:"token"`
-}
-
 func init() {
+	type responseBody struct {
+		Token string `json:"token"`
+	}
+
 	web.Register(func(svc *web.Service, app *fiber.App) {
 		log := svc.Logger().Named("auth")
 		app.Post("/auth/login", middleware.Unauthorized(), func(ctx *fiber.Ctx) error {
-			body, err := authValidateBody(ctx)
+			body, err := validateBody(ctx)
 			if err != nil {
 				return err
 			}
@@ -53,7 +53,7 @@ func init() {
 				).Errorf("error setting token: %v", err)
 				return errors.ErrorLoggingIn
 			}
-			return ctx.JSON(loginResponse{token})
+			return ctx.JSON(responseBody{token})
 		})
 	})
 }

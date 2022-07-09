@@ -4,21 +4,15 @@ import (
 	"github.com/SumeruCCTV/sumeru/pkg/errors"
 	"github.com/SumeruCCTV/sumeru/service/web"
 	"github.com/SumeruCCTV/sumeru/service/web/middleware"
-	"github.com/SumeruCCTV/sumeru/service/web/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
-
-type authBody struct {
-	Username     string `json:"username"`
-	PasswordHash string `json:"passwordHash"`
-}
 
 func init() {
 	web.Register(func(svc *web.Service, app *fiber.App) {
 		log := svc.Logger().Named("auth")
 		app.Post("/auth/register", middleware.Unauthorized(), func(ctx *fiber.Ctx) error {
-			body, err := authValidateBody(ctx)
+			body, err := validateBody(ctx)
 			if err != nil {
 				return err
 			}
@@ -42,21 +36,4 @@ func init() {
 			return nil
 		})
 	})
-}
-
-func authValidateBody(ctx *fiber.Ctx) (body authBody, err error) {
-	if err = ctx.BodyParser(&body); err != nil {
-		ctx.Status(fiber.StatusBadRequest)
-		return body, errors.InvalidBody
-	}
-	if err = utils.ValidBody(ctx, body.Username, body.PasswordHash); err != nil {
-		return
-	}
-	if err = utils.ValidUsername(body.Username, ctx); err != nil {
-		return
-	}
-	if err = utils.ValidPassword(body.PasswordHash, ctx); err != nil {
-		return
-	}
-	return
 }

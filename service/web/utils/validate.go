@@ -5,6 +5,7 @@ import (
 	"github.com/SumeruCCTV/sumeru/pkg/constants"
 	"github.com/SumeruCCTV/sumeru/pkg/errors"
 	"github.com/gofiber/fiber/v2"
+	"net"
 )
 
 func ValidUsername(username string, ctx *fiber.Ctx) error {
@@ -20,6 +21,23 @@ func ValidPassword(password string, ctx *fiber.Ctx) error {
 	if !argon2id.ValidHash(password) {
 		ctx.Status(fiber.StatusBadRequest)
 		return errors.InvalidCredentials
+	}
+	return nil
+}
+
+func ValidCameraName(name string, ctx *fiber.Ctx) error {
+	if !IntBetween(len(name), constants.CameraNameMinLength, constants.CameraNameMaxLength) ||
+		!constants.CameraNameRegex.MatchString(name) {
+		ctx.Status(fiber.StatusBadRequest)
+		return errors.InvalidCameraName
+	}
+	return nil
+}
+
+func ValidCameraAddr(addr string, ctx *fiber.Ctx) error {
+	if net.ParseIP(addr) == nil {
+		ctx.Status(fiber.StatusBadRequest)
+		return errors.InvalidCameraAddr
 	}
 	return nil
 }

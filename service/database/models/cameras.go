@@ -1,9 +1,8 @@
 package models
 
-import "net"
-
 type Camera struct {
-	Uuid      string   `gorm:"primaryKey" json:"uuid"`
-	Name      string   `gorm:"not null" json:"name"`
-	IPAddress net.Addr `gorm:"not null;serializer:addr" json:"addr"`
+	Uuid      string `gorm:"primaryKey,unique_index:idx_uuid2name" json:"uuid"`
+	OwnerUuid string `gorm:"not null" json:"ownerUuid"`
+	Name      string `gorm:"not null,unique_index:idx_uuid2name" json:"name"`
+	IPAddress string `gorm:"not null" json:"addr"`
 }
