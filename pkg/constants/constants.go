@@ -20,7 +20,7 @@ const (
 	UsernameMinLength   = 3
 	UsernameMaxLength   = 12
 	CameraNameMinLength = 3
-	CameraNameMaxLength = 18
+	CameraNameMaxLength = 24
 
 	TokenExpiration = (14 * 24 * time.Hour) / time.Second // 2 weeks in seconds
 
