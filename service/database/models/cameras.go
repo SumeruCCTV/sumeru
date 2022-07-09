@@ -5,4 +5,5 @@ type Camera struct {
 	OwnerUuid string `gorm:"not null" json:"ownerUuid"`
 	Name      string `gorm:"not null,unique_index:idx_uuid2name" json:"name"`
 	IPAddress string `gorm:"not null" json:"addr"`
+	CreatedAt int64  `json:"-"`
 }
