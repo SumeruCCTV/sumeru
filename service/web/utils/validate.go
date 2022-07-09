@@ -4,6 +4,7 @@ import (
 	"github.com/SumeruCCTV/sumeru/pkg/argon2id"
 	"github.com/SumeruCCTV/sumeru/pkg/constants"
 	"github.com/SumeruCCTV/sumeru/pkg/errors"
+	"github.com/SumeruCCTV/sumeru/service/database/models"
 	"github.com/gofiber/fiber/v2"
 	"net"
 )
@@ -38,6 +39,23 @@ func ValidCameraAddr(addr string, ctx *fiber.Ctx) error {
 	if net.ParseIP(addr) == nil {
 		ctx.Status(fiber.StatusBadRequest)
 		return errors.InvalidCameraAddr
+	}
+	return nil
+}
+
+func ValidCameraPort(port int, ctx *fiber.Ctx) error {
+	// 80 sounds like a sensible minimum port number
+	if port < 80 || port > 65535 {
+		ctx.Status(fiber.StatusBadRequest)
+		return errors.InvalidCameraPort
+	}
+	return nil
+}
+
+func ValidCameraType(cameraType models.CameraType, ctx *fiber.Ctx) error {
+	if cameraType < models.CameraTypeUnknown || cameraType > models.CameraTypeRTSP {
+		ctx.Status(fiber.StatusBadRequest)
+		return errors.InvalidCameraType
 	}
 	return nil
 }

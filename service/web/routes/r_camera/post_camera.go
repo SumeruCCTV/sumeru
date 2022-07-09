@@ -2,6 +2,7 @@ package r_camera
 
 import (
 	"github.com/SumeruCCTV/sumeru/pkg/errors"
+	"github.com/SumeruCCTV/sumeru/service/database/models"
 	"github.com/SumeruCCTV/sumeru/service/web"
 	"github.com/SumeruCCTV/sumeru/service/web/utils"
 	"github.com/gofiber/fiber/v2"
@@ -10,8 +11,10 @@ import (
 
 func init() {
 	type requestBody struct {
-		Name string `json:"cameraName"`
-		Addr string `json:"cameraAddr"`
+		Name string            `json:"name"`
+		Addr string            `json:"addr"`
+		Port int               `json:"port"`
+		Type models.CameraType `json:"type"`
 	}
 
 	type responseBody struct {
@@ -32,6 +35,12 @@ func init() {
 		if err = utils.ValidCameraAddr(body.Addr, ctx); err != nil {
 			return
 		}
+		if err = utils.ValidCameraPort(body.Port, ctx); err != nil {
+			return
+		}
+		if err = utils.ValidCameraType(body.Type, ctx); err != nil {
+			return
+		}
 		return
 	}
 
@@ -46,7 +55,7 @@ func init() {
 			if err != nil {
 				return err
 			}
-			camera, err := svc.DB().AddCameraByUuid(uuid, body.Name, body.Addr)
+			camera, err := svc.DB().AddCameraByUuid(uuid, body.Name, body.Addr, body.Port, body.Type)
 			if err != nil {
 				if errors.IsPgErr(err, errors.PgErrDuplicateEntry) {
 					ctx.Status(fiber.StatusConflict)

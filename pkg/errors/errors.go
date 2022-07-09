@@ -7,6 +7,8 @@ var (
 	InvalidCredentials = _error("invalid credentials")
 	InvalidCameraName  = _error("invalid camera name")
 	InvalidCameraAddr  = _error("invalid camera ip address")
+	InvalidCameraPort  = _error("invalid camera port")
+	InvalidCameraType  = _error("invalid camera type")
 
 	ErrorLoggingIn          = _error("error logging in")
 	ErrorLoggingOut         = _error("error logging out")
