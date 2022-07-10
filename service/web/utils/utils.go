@@ -6,7 +6,7 @@ import (
 	"github.com/SumeruCCTV/sumeru/service/web"
 	"github.com/go-redis/redis/v8"
 	"github.com/gofiber/fiber/v2"
-	"unicode"
+	"strings"
 )
 
 const emptyString = ""
@@ -38,14 +38,5 @@ func IntBetween(i, min, max int) bool {
 }
 
 func StringBlank(s string) bool {
-	// Fast path for empty string
-	if s == "" {
-		return true
-	}
-	for _, c := range s {
-		if unicode.IsSpace(c) {
-			return true
-		}
-	}
-	return false
+	return s == "" || strings.TrimSpace(s) == ""
 }

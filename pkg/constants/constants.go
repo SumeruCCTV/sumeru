@@ -32,5 +32,5 @@ const (
 var (
 	TokenRegex      = regexp.MustCompile(`^[A-Za-z\d]*$`)
 	UsernameRegex   = TokenRegex
-	CameraNameRegex = TokenRegex
+	CameraNameRegex = regexp.MustCompile(`^[A-Za-z \d]*$`) // added space to allow for spaces in camera name
 )
