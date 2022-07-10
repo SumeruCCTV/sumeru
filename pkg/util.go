@@ -8,7 +8,8 @@ import (
 	"unsafe"
 )
 
-// This needs to be optimized, it's currently very inefficient.
+// TODO: This needs to be optimized, it's currently very inefficient.
+// TODO: Instead of using fieldName, just find the field that has the type of the service.
 
 func (app *Application) injectFields(name string, svc service.Service) error {
 	svcRef := reflect.ValueOf(svc)
