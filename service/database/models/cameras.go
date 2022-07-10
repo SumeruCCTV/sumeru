@@ -7,9 +7,10 @@ type Camera struct {
 	OwnerUuid string `gorm:"uniqueIndex:idx_owner_uuid_name" json:"ownerUuid"`
 	Name      string `gorm:"uniqueIndex:idx_owner_uuid_name" json:"name"`
 
-	IPAddress string     `gorm:"not null" json:"addr"`
-	Port      int        `gorm:"not null" json:"port"`
-	Type      CameraType `gorm:"not null" json:"type"`
+	IPAddress string       `gorm:"not null" json:"addr"`
+	Port      int          `gorm:"not null" json:"port"`
+	Type      CameraType   `gorm:"not null" json:"type"`
+	Status    CameraStatus `gorm:"not null" json:"status"`
 
 	CreatedAt int64 `json:"-"`
 }
@@ -20,4 +21,12 @@ const (
 	CameraTypeUnknown CameraType = iota
 	CameraTypeONVIF
 	CameraTypeRTSP
+)
+
+type CameraStatus int
+
+const (
+	CameraStatusInvalid CameraType = iota
+	CameraStatusDisconnected
+	CameraStatusConnected
 )
