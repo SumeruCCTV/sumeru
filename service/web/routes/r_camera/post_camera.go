@@ -11,10 +11,11 @@ import (
 
 func init() {
 	type requestBody struct {
-		Name string            `json:"name"`
-		Addr string            `json:"addr"`
-		Port int               `json:"port"`
-		Type models.CameraType `json:"type"`
+		Name        string                   `json:"name"`
+		Addr        string                   `json:"addr"`
+		Port        int                      `json:"port"`
+		Type        models.CameraType        `json:"type"`
+		Credentials models.CameraCredentials `json:"credentials"`
 	}
 
 	type responseBody struct {
@@ -41,6 +42,9 @@ func init() {
 		if err = utils.ValidCameraType(body.Type, ctx); err != nil {
 			return
 		}
+		if err = utils.ValidBody(ctx, body.Credentials.Username, body.Credentials.Password); err != nil {
+			return
+		}
 		return
 	}
 
@@ -55,7 +59,14 @@ func init() {
 			if err != nil {
 				return err
 			}
-			camera, err := svc.DB().AddCameraByUuid(uuid, body.Name, body.Addr, body.Port, body.Type)
+			cam, err := svc.DB().AddCameraByUuid(&models.Camera{
+				OwnerUuid:   uuid,
+				Name:        body.Name,
+				IPAddress:   body.Addr,
+				Port:        body.Port,
+				Type:        body.Type,
+				Credentials: body.Credentials,
+			})
 			if err != nil {
 				if errors.IsPgErr(err, errors.PgErrDuplicateEntry) {
 					ctx.Status(fiber.StatusConflict)
@@ -67,8 +78,9 @@ func init() {
 				).Errorf("error adding camera to db: %v", err)
 				return errors.ErrorAddingCamera
 			}
+			svc.CameraSvc().AddCamera(cam)
 			ctx.Status(fiber.StatusCreated)
-			return ctx.JSON(responseBody{Uuid: camera.Uuid})
+			return ctx.JSON(responseBody{Uuid: cam.Uuid})
 		})
 	})
 }

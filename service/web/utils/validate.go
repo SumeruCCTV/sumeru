@@ -53,7 +53,8 @@ func ValidCameraPort(port int, ctx *fiber.Ctx) error {
 }
 
 func ValidCameraType(cameraType models.CameraType, ctx *fiber.Ctx) error {
-	if cameraType < models.CameraTypeUnknown || cameraType > models.CameraTypeRTSP {
+	// can be either ONVIF or RTSP
+	if cameraType < models.CameraTypeONVIF || cameraType > models.CameraTypeRTSP {
 		ctx.Status(fiber.StatusBadRequest)
 		return errors.InvalidCameraType
 	}

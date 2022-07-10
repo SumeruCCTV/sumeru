@@ -8,6 +8,7 @@ import (
 	"github.com/SumeruCCTV/sumeru/pkg/json"
 	"github.com/SumeruCCTV/sumeru/pkg/svcstat"
 	"github.com/SumeruCCTV/sumeru/pkg/utils"
+	"github.com/SumeruCCTV/sumeru/service/camera"
 	"github.com/SumeruCCTV/sumeru/service/database"
 	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v2"
@@ -17,16 +18,16 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/gofiber/helmet/v2"
-	"go.uber.org/atomic"
 )
 
 type Service struct {
 	cfg      *config.Config
 	log      *utils.Logger
 	database *database.Service
+	camera   *camera.Service
 
 	app     *fiber.App
-	running atomic.Bool
+	running bool
 }
 
 func (Service) Name() string {
@@ -66,9 +67,9 @@ func (svc *Service) Start() error {
 		// todo: return error
 		port := svc.cfg.Web.Port
 		svc.log.Infof("Starting web server on port %d", port)
-		svc.running.Store(true)
+		svc.running = true
 		_ = svc.app.Listen(fmt.Sprintf(":%d", port))
-		svc.running.Store(false)
+		svc.running = false
 	}()
 	return nil
 }
@@ -78,7 +79,7 @@ func (svc *Service) Stop() error {
 }
 
 func (svc *Service) Status() svcstat.Status {
-	if svc.app != nil && svc.database != nil && svc.running.Load() {
+	if svc.app != nil && svc.database != nil && svc.running {
 		return svcstat.StatusHealthy
 	}
 	return svcstat.StatusUnhealthy
@@ -90,6 +91,10 @@ func (svc *Service) Logger() *utils.Logger {
 
 func (svc *Service) DB() *database.Service {
 	return svc.database
+}
+
+func (svc *Service) CameraSvc() *camera.Service {
+	return svc.camera
 }
 
 var errorHandler = func(ctx *fiber.Ctx, _e error) error {

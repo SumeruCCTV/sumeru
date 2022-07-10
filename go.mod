@@ -3,6 +3,7 @@ module github.com/SumeruCCTV/sumeru
 go 1.18
 
 require (
+	github.com/SumeruCCTV/go-onvif v1.0.7-0.20220710204443-43ab317ee846
 	github.com/SumeruCCTV/transcoder v1.2.0
 	github.com/bytedance/sonic v1.3.3
 	github.com/go-redis/redis/v8 v8.11.5
@@ -21,7 +22,9 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20220526154910-8bf9453eb81a // indirect
+	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect

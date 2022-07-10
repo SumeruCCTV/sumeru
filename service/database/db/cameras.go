@@ -4,15 +4,16 @@ import (
 	"github.com/SumeruCCTV/sumeru/service/database/models"
 )
 
-func (db *Database) AddCameraByUuid(accountUuid, cameraName, cameraAddr string, cameraPort int, cameraType models.CameraType) (*models.Camera, error) {
-	uuid := db.GenerateUuid()
-	camera := &models.Camera{
-		Uuid:      uuid,
-		Name:      cameraName,
-		OwnerUuid: accountUuid,
-		IPAddress: cameraAddr,
-		Port:      cameraPort,
-		Type:      cameraType,
-	}
+func (db *Database) AddCameraByUuid(camera *models.Camera) (*models.Camera, error) {
+	camera.Uuid = db.GenerateUuid()
+	camera.Status = models.CameraStatusInvalid
 	return camera, db.Create(camera).Error
+}
+
+func (db *Database) UpdateCameraStatus(uuid string, status models.CameraStatus) error {
+	// should we create the model only once?
+	return db.Model(&models.Camera{}).
+		Where("uuid = ?", uuid).
+		Update("status", status).
+		Error
 }
